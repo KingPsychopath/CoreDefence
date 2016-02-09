@@ -18,8 +18,11 @@ public enum Message {
 	PLAYER_KICK_MESSAGE("&4%p &dHas Been Kicked!"),
 	
 	
-	ERROR_TEAM_IS_NULL("&4&lError: Team Is Null!");
+	ERROR_TEAM_IS_NULL("&4&lError: Team Is Null!"),
 	
+	GAME_TIMER_FINISHING("&6Game will end in %t."),
+	
+	TEAM_IS_NULL("&4Team >[ERROR]< Is Null!");
 	private String message;
 	
     Message(String message) {
@@ -42,8 +45,22 @@ public enum Message {
     	System.out.println(message);
     }
     
+    public void consoleReplaceMessage(String replace, String with){
+    	System.out.println(message.replace(replace, with));
+    }
+    
     public void boardcastReplaceMessage(String replace, String with){
     	Bukkit.broadcastMessage(message.replace(replace, with));
+    }
+    
+    public void boardcastGameTimer(int mins, int seconds){
+		int totalSecs = ((60 * mins) + seconds);
+		int fminutes =(totalSecs %3600)/60;
+		int fseconds = totalSecs %60;
+
+		String timeString = String.format("%02d:%02d", fminutes, fseconds);
+		
+		Bukkit.broadcastMessage(message.replace("%t", timeString));
     }
 
 }

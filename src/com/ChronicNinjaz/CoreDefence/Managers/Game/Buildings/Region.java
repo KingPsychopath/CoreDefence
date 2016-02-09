@@ -11,11 +11,10 @@ public class Region {
 	private static Location point1;
 	private static Location point2;
 	
-	public Region(Location p1, Location p2){
+	public Region(Location p1, Location p2, Building building){
 		Region.point1 = p1;
 		Region.point2 = p2;
 		cubiod = new Cuboid(p1, p2);
-		
 		for(Block b: cubiod){
 			b.setType(Material.GLASS);
 		}
