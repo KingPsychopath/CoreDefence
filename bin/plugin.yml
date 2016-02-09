@@ -1,0 +1,6 @@
+main: com.ChronicNinjaz.CoreDefence.CoreDefence
+name: Core Defence
+version: 1.0
+
+commands:
+  coredefence:
