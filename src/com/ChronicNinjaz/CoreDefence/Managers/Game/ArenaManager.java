@@ -96,8 +96,6 @@ public class ArenaManager {
 		//min players on each team
 		//core captured max
 		//players killed max
-		//points reached max
-		//other checks 
 		
 		//Bassically do all the fucking checks here XD haah 
 		//im still typing... dafuck im really board aint I
