@@ -13,6 +13,7 @@ import com.ChronicNinjaz.CoreDefence.Managers.ConfigurationManagers.Configuratio
 import com.ChronicNinjaz.CoreDefence.Managers.ConfigurationManagers.PlayerConfiguration;
 import com.ChronicNinjaz.CoreDefence.Managers.ConfigurationManagers.PlayerDataManager;
 import com.ChronicNinjaz.CoreDefence.Managers.Enums.GameState;
+import com.ChronicNinjaz.CoreDefence.Managers.Game.ArenaManager;
 import com.ChronicNinjaz.CoreDefence.Managers.Game.Countdown;
 import com.ChronicNinjaz.CoreDefence.Managers.Game.StatsManager;
 import com.ChronicNinjaz.CoreDefence.Managers.Menus.MenuManager;
@@ -31,6 +32,7 @@ public class CoreDefence extends JavaPlugin{
 	private static PlayerConfiguration playerConfiguration;
 	private static PlayerDataManager playerDataManager;
 	private static MenuManager menuManager;
+	private static ArenaManager manager;
 	private static StatsMenu stats;
 	private static TeamManager tManager;
 	private static boolean load = true;
@@ -46,6 +48,7 @@ public class CoreDefence extends JavaPlugin{
 		playerDataManager = new PlayerDataManager();
 		menuManager = new MenuManager(getPlugin());
 		tManager = new TeamManager();
+		manager = new ArenaManager();
 		load = getConfiguration().getConfig().getBoolean("LoadFromFile");
 		setGameState(GameState.WAITING);
 		if(load){}else{/**mySQL = new MySQL(this, "31.170.160.102", "80", "minecraft", "root", ""); mySQL.openConnection(); */}
@@ -60,6 +63,8 @@ public class CoreDefence extends JavaPlugin{
 		this.setRed(new Team("RED"));
 		this.setBlue(new Team("BLUE"));
 		menuManager.addMenu("kit", new KitMenu("&6Kit Menu", 9));
+		
+		manager.firstStart();
 		//menuManager.addMenu("stats", new StatsMenu("&6Stats", 54));
 	
 	}

@@ -1,6 +1,7 @@
 package com.ChronicNinjaz.CoreDefence.Utils.Kits;
 
 
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -23,7 +24,7 @@ public class Wizard implements KitManager{
 	public void givePlayerKit(Player player, Team team) {
 		player.getInventory().clear();
 		player.getInventory().setArmorContents(null);
-		
+		Bukkit.broadcastMessage("wizard");
 		switch(team.getName()){
 		case "RED":
 			player.getInventory().setHelmet(new ItemStackBuilder(Material.LEATHER_HELMET).withColor(Color.RED).withAmount(1).withName("&4Red Team").build());

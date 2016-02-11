@@ -36,9 +36,10 @@ public class ArenaManager {
 	
 	public void start(){
 		CoreDefence.setGameState(GameState.STARTED);
+		Bukkit.broadcastMessage("RUN START!");
 		setGameRunning(true);
-		this.min = 5; //Mins
-		this.seconds = 60; //Seconds
+		this.min = 2; //Mins
+		this.seconds = 20; //Seconds
 		this.maxCoreDamage = 300;
 		
 		for(Player player: Bukkit.getOnlinePlayers()){
@@ -56,11 +57,12 @@ public class ArenaManager {
 			case "RED":
 				for(UUID p: t.getPlayers()){
 					Player player = Bukkit.getPlayer(p);
-					if(player != null && player.isOnline() && this.getRedTeamSpawn() != null){
+					// && this.getRedTeamSpawn() != null
+					if(player != null && player.isOnline()){
 						Players profile = Players.getPlayer(player);
-						Kit k = profile.getKit();	
+						Kit k = profile.getKit();
 						k.getKitManager().givePlayerKit(player, TeamManager.getTeam(player));
-						player.teleport(this.getRedTeamSpawn());
+			//			player.teleport(this.getRedTeamSpawn());
 						break;
 					}else{
 						Bukkit.broadcastMessage("Red Team Spawn Error");
@@ -71,11 +73,12 @@ public class ArenaManager {
 			case "BLUE":
 				for(UUID p: t.getPlayers()){
 					Player player = Bukkit.getPlayer(p);
-					if(player != null && player.isOnline() && this.getBlueTeamSpawn() != null){
+					// && this.getBlueTeamSpawn() != null
+					if(player != null && player.isOnline()){
 						Players profile = Players.getPlayer(player);
 						Kit k = profile.getKit();	
 						k.getKitManager().givePlayerKit(player, TeamManager.getTeam(player));
-						player.teleport(this.getBlueTeamSpawn());
+						//player.teleport(this.getBlueTeamSpawn());
 						break;
 					}else{
 						Bukkit.broadcastMessage("Blue Team Spawn Error");
@@ -90,13 +93,14 @@ public class ArenaManager {
 			int count = ((getMin() * 60) + getSeconds());
 			@Override
 			public void run() {
-				if(count <= 0 && gameMeetsRequirements()){
+				if((!(count <= 0) && gameMeetsRequirements())){
 					count--;
 					if(count % 60 <= 0 && count > 60){
 						Message.GAME_TIMER_FINISHING.boardcastGameTimer(count);
 					}
 				}else{
 					Message.GAME_HAS_ENDED.boardcastMessage();
+					end();
 					cancel();
 				}
 			}
@@ -114,7 +118,7 @@ public class ArenaManager {
 				int count = getRestartTimer();
 				@Override
 				public void run() {
-					if(count <= 0 && gameMeetsRequirements()){
+					Bukkit.broadcastMessage(count + " <<");
 						count--;
 						if(count % 10 <= 0 && count > 10){
 							Message.GAME_TIMER_LOBBY.boardcastGameTimer(count);
@@ -130,28 +134,61 @@ public class ArenaManager {
 								count = getRestartTimer();
 							}
 						}
-					}else{
-						Message.GAME_HAS_ENDED.boardcastMessage();
-						cancel();
-					}
 				}
 				
 			}.runTaskTimer(CoreDefence.getPlugin(), 0, 20);
 		
 	}
 	
+	public void firstStart(){
+		Bukkit.broadcastMessage("1ST RUN!");
+		CoreDefence.setGameState(GameState.WAITING);
+		setGameRunning(false);
+		setRestartTimer(20);
+		this.min = 5; //Mins
+		this.seconds = 60; //Seconds
+		this.maxCoreDamage = 300;
+		this.minPlayersPerTeam = 0;
+		new BukkitRunnable(){
+				int count = getRestartTimer();
+				@Override
+				public void run() {
+						count--;
+						if(count % 10 <= 0 && count > 10){
+							Message.GAME_TIMER_LOBBY.boardcastGameTimer(count);
+						}else if(count < 10 && count > 0){
+							Message.GAME_TIMER_LOBBY.boardcastGameTimer(count);
+						}else if(count <= 0){
+							Message.GAME_TIMER_STARTED.boardcastGameTimer(count);
+							if(gameMeetsRequirements()){
+								Bukkit.broadcastMessage("HAS STARTED!");
+								cancel();
+								start();
+							}else{
+								Message.GAME_ERROR_NOT_ENOUGH_PLAYERS.boardcastMessage();
+								count = getRestartTimer();
+							}
+						}
+				}
+				
+			}.runTaskTimer(CoreDefence.getPlugin(), 0, 20);
+	}
+	
 	public boolean gameMeetsRequirements(){
 		for(Team t: TeamManager.getTeams()){
 			if(t != null){
 				if(t.getPlayers().size() < getMinPlayersPerTeam()){
+					Bukkit.broadcastMessage("Players! <<");
 					return false;
 				}
 			
 				if(t.getCoreDamaged() >= getMaxCoreDamage()){
+					Bukkit.broadcastMessage("Core <<");
 					return false;
 				}
 			}else{
 				Message.TEAM_IS_NULL.consoleMessage();
+				return false;
 			}
 			
 		}

@@ -1,5 +1,6 @@
 package com.ChronicNinjaz.CoreDefence.Utils.Kits;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -17,7 +18,7 @@ public class Archer implements KitManager{
 	public void givePlayerKit(Player player, Team t) {
 		player.getInventory().clear();
 		player.getInventory().setArmorContents(null);
-		
+		Bukkit.broadcastMessage("ARCHER");
 		switch(t.getName()){
 		case "RED":
 			player.getInventory().setHelmet(new ItemStackBuilder(Material.LEATHER_HELMET).withColor(Color.RED).withAmount(1).withName("&4Red Team").build());
