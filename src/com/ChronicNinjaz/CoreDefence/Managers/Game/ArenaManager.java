@@ -29,16 +29,29 @@ public class ArenaManager {
 	private int min;
 	private int seconds;	
 	private int minPlayersPerTeam;
-	
+	private int restartTimer;
 	private int maxCoreDamage;
+	
+	private boolean gameRunning;
 	
 	public void start(){
 		CoreDefence.setGameState(GameState.STARTED);
-		
+		setGameRunning(true);
 		this.min = 5; //Mins
 		this.seconds = 60; //Seconds
 		this.maxCoreDamage = 300;
+		
+		for(Player player: Bukkit.getOnlinePlayers()){
+			Players profile = Players.getPlayer(player);
+			TeamManager.addToTeam(player);
+			profile.setPlayerTeam(true);
+		}
+		
 		for(Team t: TeamManager.getTeams()){
+			t.setPoints(1000);
+			t.setTeamDeaths(0);
+			t.setCoreDamaged(0);
+			t.setTeamKills(0);
 			switch(t.getName()){
 			case "RED":
 				for(UUID p: t.getPlayers()){
@@ -74,16 +87,16 @@ public class ArenaManager {
 		}
 		
 		new BukkitRunnable(){
-			
 			int count = ((getMin() * 60) + getSeconds());
-			
 			@Override
 			public void run() {
-				
 				if(count <= 0 && gameMeetsRequirements()){
 					count--;
-					Message.GAME_TIMER_FINISHING.boardcastGameTimer(getMin(), getSeconds());
+					if(count % 60 <= 0 && count > 60){
+						Message.GAME_TIMER_FINISHING.boardcastGameTimer(count);
+					}
 				}else{
+					Message.GAME_HAS_ENDED.boardcastMessage();
 					cancel();
 				}
 			}
@@ -92,18 +105,42 @@ public class ArenaManager {
 		
 	}
 	
+	
+	public void end(){
+		CoreDefence.setGameState(GameState.WAITING);
+		setGameRunning(false);
+		setRestartTimer(20);
+		new BukkitRunnable(){
+				int count = getRestartTimer();
+				@Override
+				public void run() {
+					if(count <= 0 && gameMeetsRequirements()){
+						count--;
+						if(count % 10 <= 0 && count > 10){
+							Message.GAME_TIMER_LOBBY.boardcastGameTimer(count);
+						}else if(count < 10 && count > 0){
+							Message.GAME_TIMER_LOBBY.boardcastGameTimer(count);
+						}else if(count <= 0){
+							Message.GAME_TIMER_STARTED.boardcastGameTimer(count);
+							if(gameMeetsRequirements()){
+								start();
+								cancel();
+							}else{
+								Message.GAME_ERROR_NOT_ENOUGH_PLAYERS.boardcastMessage();
+								count = getRestartTimer();
+							}
+						}
+					}else{
+						Message.GAME_HAS_ENDED.boardcastMessage();
+						cancel();
+					}
+				}
+				
+			}.runTaskTimer(CoreDefence.getPlugin(), 0, 20);
+		
+	}
+	
 	public boolean gameMeetsRequirements(){
-		//min players on each team
-		//core captured max
-		//players killed max
-		
-		//Bassically do all the fucking checks here XD haah 
-		//im still typing... dafuck im really board aint I
-		//omg im listening to one direction wtf is wrong with me XDDDDDD
-		//wait im liking it 0.0
-		//I think im gay 00000000000000000.0000000000000000000
-		
-		//if()
 		for(Team t: TeamManager.getTeams()){
 			if(t != null){
 				if(t.getPlayers().size() < getMinPlayersPerTeam()){
@@ -191,6 +228,26 @@ public class ArenaManager {
 
 	public void setMaxCoreDamage(int maxCoreDamage) {
 		this.maxCoreDamage = maxCoreDamage;
+	}
+
+
+	public boolean isGameRunning() {
+		return gameRunning;
+	}
+
+
+	public void setGameRunning(boolean gameRunning) {
+		this.gameRunning = gameRunning;
+	}
+
+
+	public int getRestartTimer() {
+		return restartTimer;
+	}
+
+
+	public void setRestartTimer(int restartTimer) {
+		this.restartTimer = restartTimer;
 	}
 	
 

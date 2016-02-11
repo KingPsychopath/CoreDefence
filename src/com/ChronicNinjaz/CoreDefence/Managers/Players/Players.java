@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.ChronicNinjaz.CoreDefence.Managers.Enums.Kit;
+import com.ChronicNinjaz.CoreDefence.Utils.Message;
 
 public class Players {
 
@@ -177,6 +178,16 @@ public class Players {
 
 	public void setKit(Kit kit) {
 		this.kit = kit;
+		switch(kit.getName()){
+		case "Archer":
+			this.player.sendMessage("" + Message.PLAYER_CHOICE_KIT_ARCHER);
+			break;
+		case "Wizard":
+			this.player.sendMessage("" + Message.PLAYER_CHOICE_KIT_WIZARD);
+			break;
+			default:
+				
+		}
 	}
 
 }

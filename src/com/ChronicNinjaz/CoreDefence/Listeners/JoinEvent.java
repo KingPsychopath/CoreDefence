@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.SkullType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -57,15 +58,11 @@ public class JoinEvent implements Listener{
 				profile.setBuildings_distroyed(CoreDefence.getPlugin().getPlayerConfiguration().getConfig().getInt(player.getName() + ".buildings_distroyed"));
 			}
 			
-			if(!profile.playerHasTeam()){
+/*			if(!profile.playerHasTeam()){
 				TeamManager.addToTeam(player);
 				profile.setPlayerTeam(true);
-			}
+			}*/
 			
-			for(Team t: TeamManager.getTeams()){
-				Bukkit.broadcastMessage("Name: " + t.getName());
-				Bukkit.broadcastMessage("Players: " + t.getPlayers());
-			}
 			try{
 				CoreDefence.getPlugin();
 				String l = CoreDefence.getConfiguration().getConfig().getString("Locations.Spawn");
@@ -82,7 +79,7 @@ public class JoinEvent implements Listener{
 			}
 			
 			player.getInventory().setItem(0, new ItemStackBuilder(new ItemStack(Material.BOW)).withName("Choice Kit").withAmount(1).withLore("(Right Click) to open inventory!").build());
-			player.getInventory().setItem(3, new ItemStackBuilder(new ItemStack(Material.APPLE)).withName("Stats").withAmount(1).withLore("(Right Click) to open inventory!").build());
+			player.getInventory().setItem(3, new ItemStackBuilder().buildSkull(player).build());
 			
 		}else{
 			event.getPlayer().kickPlayer(CoreDefence.getGameState().equals(GameState.STARTED) ? Message.STATE_STATING.toString() : Message.STATE_RESTARTING.toString());

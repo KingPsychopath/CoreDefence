@@ -29,7 +29,6 @@ public class KitMenu extends Menu{
 		 for(Kit kit: Kit.values()){
 			 if(kit.getName().equalsIgnoreCase(itemName)){
 				 Players.getPlayer(player).setKit(kit);
-				 kit.getKitManager().givePlayerKit(player, TeamManager.getTeam(player));
 			 }
 		 }
 	}

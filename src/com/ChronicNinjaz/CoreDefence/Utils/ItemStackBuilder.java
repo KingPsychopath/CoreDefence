@@ -3,15 +3,21 @@ package com.ChronicNinjaz.CoreDefence.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.SkullType;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 public class ItemStackBuilder {
-	 private final ItemStack ITEM_STACK;
+	 private ItemStack ITEM_STACK;
+	 
+	    public ItemStackBuilder() { }
 
 	    public ItemStackBuilder(Material mat) {
 	        this.ITEM_STACK = new ItemStack(mat);
@@ -95,7 +101,18 @@ public class ItemStackBuilder {
 	            throw new IllegalArgumentException("withColor is only applicable for leather armor!");
 	        }
 	    }
-
+	    
+	    public ItemStackBuilder buildSkull(Player player){
+	    	ITEM_STACK = new ItemStack(Material.SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
+	    	SkullMeta meta = (SkullMeta) ITEM_STACK.getItemMeta();
+	    	if(player != null){
+	    		meta.setOwner(player.getName());
+	    		meta.setDisplayName(player.getName() + " Stats");
+	    		ITEM_STACK.setItemMeta(meta);
+	    	}
+	    	return this;
+	    }
+	    
 	    public ItemStack build() {
 	        return ITEM_STACK;
 	    }

@@ -16,11 +16,18 @@ public enum Message {
 	
 	PLAYER_QUIT_MESSAGE("&4%p &eHas Quit The Game!"),
 	PLAYER_KICK_MESSAGE("&4%p &dHas Been Kicked!"),
+	PLAYER_CHOICE_KIT_ARCHER("&6&lYou Have Chosen The &e&lArcher &6&lKit! "),
+	PLAYER_CHOICE_KIT_WIZARD("&6&lYou Have Chosen The &e&lWizard &6&lKit! "),
 	
 	
 	ERROR_TEAM_IS_NULL("&4&lError: Team Is Null!"),
 	
 	GAME_TIMER_FINISHING("&6Game will end in %t."),
+	GAME_TIMER_LOBBY("&6Game Going InTo Prosess In %t"),
+	GAME_TIMER_STARTING("&6Game Starting In %t"),
+	GAME_TIMER_STARTED("&6Game Has Started!"),
+	GAME_HAS_ENDED("&6Game Has Ended!"),
+	GAME_ERROR_NOT_ENOUGH_PLAYERS("&4Not Enough Players To Start The Game!"),
 	
 	TEAM_IS_NULL("&4Team >[ERROR]< Is Null!");
 	private String message;
@@ -53,8 +60,8 @@ public enum Message {
     	Bukkit.broadcastMessage(message.replace(replace, with));
     }
     
-    public void boardcastGameTimer(int mins, int seconds){
-		int totalSecs = ((60 * mins) + seconds);
+    public void boardcastGameTimer(int count){
+		int totalSecs = count;
 		int fminutes =(totalSecs %3600)/60;
 		int fseconds = totalSecs %60;
 
