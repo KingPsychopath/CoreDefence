@@ -3,6 +3,8 @@ package com.ChronicNinjaz.CoreDefence.Managers.Teams;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import org.bukkit.Location;
+
 public class Team {
 	
 	private ArrayList<UUID> players;
@@ -14,6 +16,8 @@ public class Team {
 	
 	private int teamKills;
 	private int teamDeaths;
+	
+	private Location spawn;
 	
 	public Team(String name){
 		this.name = name;
@@ -63,6 +67,14 @@ public class Team {
 
 	public void setTeamDeaths(int teamDeaths) {
 		this.teamDeaths = teamDeaths;
+	}
+
+	public Location getSpawn() {
+		return spawn;
+	}
+
+	public void setSpawn(Location spawn) {
+		this.spawn = spawn;
 	}
 
 }

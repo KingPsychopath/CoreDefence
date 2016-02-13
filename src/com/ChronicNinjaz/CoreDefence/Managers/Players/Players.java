@@ -186,6 +186,8 @@ public class Players {
 			this.player.sendMessage("" + Message.PLAYER_CHOICE_KIT_WIZARD);
 			break;
 			default:
+				this.player.sendMessage("error");
+				break;
 				
 		}
 	}

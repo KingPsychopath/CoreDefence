@@ -50,8 +50,8 @@ public class MenuManager implements Listener{
         Inventory inv = player.getOpenInventory().getTopInventory();
         for (Menu menu : menus.values()) {
             if (menu.getInventory().getName().equals(inv.getName())) {
-                e.setCancelled(true);
-                menu.onClick(player, e.getCurrentItem());
+            	e.setCancelled(true);
+            	menu.onClick(player, e.getCurrentItem());
             }
         }
     }

@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.ChronicNinjaz.CoreDefence.CoreDefence;
+import com.ChronicNinjaz.CoreDefence.Managers.Enums.GameLocations;
 
 public class ConfigurationManager {
 	
@@ -32,7 +33,13 @@ public class ConfigurationManager {
             
 				config.set("LoadFromFile", true);
 				
-				CoreDefence.getConfiguration().getConfig().set("Locations.Spawn", serialzeLocation(Bukkit.getWorlds().get(0).getSpawnLocation()));
+				Location placeHolder = Bukkit.getWorlds().get(0).getSpawnLocation();
+				config.set(GameLocations.SPAWN.getLocation(), serialzeLocation(placeHolder));
+				config.set(GameLocations.RED_TEAM_SPAWN.getLocation(), serialzeLocation(placeHolder));
+				config.set(GameLocations.BLUE_TEAM_SPAWN.getLocation(), serialzeLocation(placeHolder));
+				
+			//	Bukkit.broadcastMessage(getLocation(GameLocations.SPAWN.getLocation()) + " <><>");
+				
 				saveConfig();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -54,8 +61,8 @@ public class ConfigurationManager {
 	
     public Location getLocation(String location) {
         String[] parts = location.split(" ");
-        return new Location(Bukkit.getWorlds().get(0), Double.valueOf(parts[0]), Double.valueOf(parts[1]),
-                Double.valueOf(parts[2]), Float.valueOf(parts[3]), Float.valueOf(parts[4]));
+        return new Location(Bukkit.getWorlds().get(0), Double.valueOf(parts[0]), Double.valueOf(parts[1]), 
+        		Double.valueOf(parts[2]), Float.valueOf(parts[3]), Float.valueOf(parts[4]));
     }
 	
 	public String serialzeLocation(Location location){

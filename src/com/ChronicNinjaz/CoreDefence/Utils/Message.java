@@ -18,6 +18,10 @@ public enum Message {
 	PLAYER_KICK_MESSAGE("&4%p &dHas Been Kicked!"),
 	PLAYER_CHOICE_KIT_ARCHER("&6&lYou Have Chosen The &e&lArcher &6&lKit! "),
 	PLAYER_CHOICE_KIT_WIZARD("&6&lYou Have Chosen The &e&lWizard &6&lKit! "),
+	PLAYER_NO_PERMISSION("&4You do not have permission to use this command!"),
+	PLAYER_WRONG_USEAGE("&4Wrong usage of the command!"),
+	
+	ADMIN_SUCCSESSFULLY_SET_LOCATION("&bYou have &3&lSuccsessfully &bset &3&l%location%&b!"),
 	
 	
 	ERROR_TEAM_IS_NULL("&4&lError: Team Is Null!"),
@@ -50,6 +54,10 @@ public enum Message {
     
     public void consoleMessage(){
     	System.out.println(message);
+    }
+    
+    public String replace(String replace, String with){
+    	return message.replace(replace, with);
     }
     
     public void consoleReplaceMessage(String replace, String with){

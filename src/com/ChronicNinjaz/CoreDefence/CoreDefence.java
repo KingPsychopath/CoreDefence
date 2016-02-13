@@ -1,6 +1,9 @@
 package com.ChronicNinjaz.CoreDefence;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -12,17 +15,18 @@ import com.ChronicNinjaz.CoreDefence.Listeners.QuitEvent;
 import com.ChronicNinjaz.CoreDefence.Managers.ConfigurationManagers.ConfigurationManager;
 import com.ChronicNinjaz.CoreDefence.Managers.ConfigurationManagers.PlayerConfiguration;
 import com.ChronicNinjaz.CoreDefence.Managers.ConfigurationManagers.PlayerDataManager;
+import com.ChronicNinjaz.CoreDefence.Managers.Enums.GameLocations;
 import com.ChronicNinjaz.CoreDefence.Managers.Enums.GameState;
 import com.ChronicNinjaz.CoreDefence.Managers.Game.ArenaManager;
-import com.ChronicNinjaz.CoreDefence.Managers.Game.Countdown;
 import com.ChronicNinjaz.CoreDefence.Managers.Game.StatsManager;
 import com.ChronicNinjaz.CoreDefence.Managers.Menus.MenuManager;
+import com.ChronicNinjaz.CoreDefence.Managers.Players.Players;
 import com.ChronicNinjaz.CoreDefence.Managers.SQL.MySQL;
 import com.ChronicNinjaz.CoreDefence.Managers.Teams.Team;
 import com.ChronicNinjaz.CoreDefence.Managers.Teams.TeamManager;
 import com.ChronicNinjaz.CoreDefence.Menus.KitMenu;
 import com.ChronicNinjaz.CoreDefence.Menus.StatsMenu;
-import com.ChronicNinjaz.CoreDefence.Utils.Message;
+import com.ChronicNinjaz.CoreDefence.Utils.ItemStackBuilder;
 
 public class CoreDefence extends JavaPlugin{
 	
@@ -39,7 +43,7 @@ public class CoreDefence extends JavaPlugin{
 	private static MySQL mySQL;
 	private Team red;
 	private Team blue;
-	
+
 	public void onEnable(){
 		setPlugin(this);
 		if(!plugin.getDataFolder().exists()){plugin.getDataFolder().mkdir();}
@@ -64,8 +68,27 @@ public class CoreDefence extends JavaPlugin{
 		this.setBlue(new Team("BLUE"));
 		menuManager.addMenu("kit", new KitMenu("&6Kit Menu", 9));
 		
-		manager.firstStart();
-		//menuManager.addMenu("stats", new StatsMenu("&6Stats", 54));
+		try{
+			TeamManager.getTeam("RED").setSpawn(CoreDefence.getConfiguration().getLocation(CoreDefence.getConfiguration().getConfig().getString(GameLocations.RED_TEAM_SPAWN.getLocation())));
+			TeamManager.getTeam("BLUE").setSpawn(CoreDefence.getConfiguration().getLocation(CoreDefence.getConfiguration().getConfig().getString(GameLocations.BLUE_TEAM_SPAWN.getLocation())));
+		}catch(NullPointerException e){
+			e.printStackTrace();
+		}
+		
+		for(Player player: Bukkit.getOnlinePlayers()){
+			Players profile = new Players(player);
+			
+			profile.setKills(CoreDefence.getPlugin().getPlayerConfiguration().getConfig().getInt(player.getName() + ".kills"));
+			profile.setDeaths(CoreDefence.getPlugin().getPlayerConfiguration().getConfig().getInt(player.getName() + ".deaths"));
+			profile.setCores_captured(CoreDefence.getPlugin().getPlayerConfiguration().getConfig().getInt(player.getName() + ".cores_captured"));
+			profile.setGame_played(CoreDefence.getPlugin().getPlayerConfiguration().getConfig().getInt(player.getName() + ".games_played"));
+			profile.setGems(CoreDefence.getPlugin().getPlayerConfiguration().getConfig().getInt(player.getName() + ".gems"));
+			profile.setBuildings_distroyed(CoreDefence.getPlugin().getPlayerConfiguration().getConfig().getInt(player.getName() + ".buildings_distroyed"));
+			
+			player.getInventory().setItem(0, new ItemStackBuilder(new ItemStack(Material.BOW)).withName("Choice Kit").withAmount(1).withLore("(Right Click) to open inventory!").build());
+			player.getInventory().setItem(3, new ItemStackBuilder().buildSkull(player).build());
+		}
+		//manager.firstStart();
 	
 	}
 	
@@ -167,5 +190,13 @@ public class CoreDefence extends JavaPlugin{
 
 	public static void setStats(StatsMenu stats) {
 		CoreDefence.stats = stats;
+	}
+
+	public static ArenaManager getManager() {
+		return manager;
+	}
+
+	public static void setManager(ArenaManager manager) {
+		CoreDefence.manager = manager;
 	}
 }

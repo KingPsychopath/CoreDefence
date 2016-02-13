@@ -3,9 +3,12 @@ package com.ChronicNinjaz.CoreDefence.Listeners;
 import java.sql.SQLException;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -58,11 +61,6 @@ public class JoinEvent implements Listener{
 				profile.setBuildings_distroyed(CoreDefence.getPlugin().getPlayerConfiguration().getConfig().getInt(player.getName() + ".buildings_distroyed"));
 			}
 			
-/*			if(!profile.playerHasTeam()){
-				TeamManager.addToTeam(player);
-				profile.setPlayerTeam(true);
-			}*/
-			
 			try{
 				CoreDefence.getPlugin();
 				String l = CoreDefence.getConfiguration().getConfig().getString("Locations.Spawn");
@@ -70,6 +68,9 @@ public class JoinEvent implements Listener{
 						Location loc = CoreDefence.getConfiguration().getLocation(l);
 						if(loc != null){
 							player.teleport(loc);
+							//Bukkit.getWorlds().get(0).playEffect(loc, Effect.SMOKE, 100);
+							
+							player.getWorld().spigot().playEffect(loc, Effect.SMOKE);
 						}else{
 							Bukkit.broadcastMessage("Error: Lobby Location Has Not Been Configured Properly.");
 						}

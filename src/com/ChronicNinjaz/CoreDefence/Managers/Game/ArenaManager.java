@@ -23,9 +23,6 @@ public class ArenaManager {
 	
 	private Location point1;
 	private Location point2;
-	private Location redTeamSpawn;
-	private Location blueTeamSpawn;
-	
 	private int min;
 	private int seconds;	
 	private int minPlayersPerTeam;
@@ -62,7 +59,7 @@ public class ArenaManager {
 						Players profile = Players.getPlayer(player);
 						Kit k = profile.getKit();
 						k.getKitManager().givePlayerKit(player, TeamManager.getTeam(player));
-			//			player.teleport(this.getRedTeamSpawn());
+						player.teleport(t.getSpawn());
 						break;
 					}else{
 						Bukkit.broadcastMessage("Red Team Spawn Error");
@@ -78,7 +75,7 @@ public class ArenaManager {
 						Players profile = Players.getPlayer(player);
 						Kit k = profile.getKit();	
 						k.getKitManager().givePlayerKit(player, TeamManager.getTeam(player));
-						//player.teleport(this.getBlueTeamSpawn());
+						player.teleport(t.getSpawn());
 						break;
 					}else{
 						Bukkit.broadcastMessage("Blue Team Spawn Error");
@@ -217,22 +214,6 @@ public class ArenaManager {
 
 	public void setPoint2(Location point2) {
 		this.point2 = point2;
-	}
-
-	public Location getRedTeamSpawn() {
-		return redTeamSpawn;
-	}
-
-	public void setRedTeamSpawn(Location redTeamSpawn) {
-		this.redTeamSpawn = redTeamSpawn;
-	}
-
-	public Location getBlueTeamSpawn() {
-		return blueTeamSpawn;
-	}
-
-	public void setBlueTeamSpawn(Location blueTeamSpawn) {
-		this.blueTeamSpawn = blueTeamSpawn;
 	}
 	
 	public int getMin() {

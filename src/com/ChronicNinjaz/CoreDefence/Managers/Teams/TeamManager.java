@@ -45,6 +45,15 @@ public class TeamManager{
 		return null;
 	}
 	
+	public static Team getTeam(String name){
+		for(Team t: teams){
+			if(t.getName() == name){
+				return t;
+			}
+		}
+		return null;
+	}
+	
 	public static void removeFromTeam(Player player){
 			if(hasTeam(player)){
 				getTeam(player).getPlayers().remove(player.getUniqueId());
