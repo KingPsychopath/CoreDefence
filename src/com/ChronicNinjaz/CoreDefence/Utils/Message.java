@@ -33,7 +33,9 @@ public enum Message {
 	GAME_HAS_ENDED("&6Game Has Ended!"),
 	GAME_ERROR_NOT_ENOUGH_PLAYERS("&4Not Enough Players To Start The Game!"),
 	
-	TEAM_IS_NULL("&4Team >[ERROR]< Is Null!");
+	TEAM_IS_NULL("&4Team >[ERROR]< Is Null!"),
+	
+	TIMER_ADD_SECONDS("&6Added %t Seconds To Countdown!");
 	private String message;
 	
     Message(String message) {

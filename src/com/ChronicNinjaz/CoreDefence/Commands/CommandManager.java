@@ -18,7 +18,13 @@ public class CommandManager implements CommandExecutor {
 			if (sender instanceof Player) {
 				Player player = (Player) sender;
 				if (player.hasPermission("coredefence.admin")) {
-					if (args.length == 2) {
+					if(args.length == 1){
+						if(args[0].equalsIgnoreCase("cancel")){
+							CoreDefence.getThread().cancel();
+						}else if(args[0].equalsIgnoreCase("start")){
+							CoreDefence.getThread().runTaskTimer(CoreDefence.getPlugin(), 0, 20);
+						}
+					}else if (args.length == 2) {
 						if (args[0].equalsIgnoreCase("set")) {
 							if (args[1].equalsIgnoreCase("lobby")) {
 								CoreDefence.getConfiguration().getConfig().set("Locations.Spawn",CoreDefence.getConfiguration().serialzeLocation(player.getLocation()));

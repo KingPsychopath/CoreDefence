@@ -1,13 +1,11 @@
 package com.ChronicNinjaz.CoreDefence;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import com.ChronicNinjaz.CoreDefence.Commands.CommandManager;
 import com.ChronicNinjaz.CoreDefence.Listeners.InteractEvent;
@@ -20,6 +18,7 @@ import com.ChronicNinjaz.CoreDefence.Managers.ConfigurationManagers.PlayerDataMa
 import com.ChronicNinjaz.CoreDefence.Managers.Enums.GameLocations;
 import com.ChronicNinjaz.CoreDefence.Managers.Enums.GameState;
 import com.ChronicNinjaz.CoreDefence.Managers.Game.ArenaManager;
+import com.ChronicNinjaz.CoreDefence.Managers.Game.GameThread;
 import com.ChronicNinjaz.CoreDefence.Managers.Game.StatsManager;
 import com.ChronicNinjaz.CoreDefence.Managers.Menus.MenuManager;
 import com.ChronicNinjaz.CoreDefence.Managers.Players.Players;
@@ -30,7 +29,6 @@ import com.ChronicNinjaz.CoreDefence.Managers.Teams.TeamManager;
 import com.ChronicNinjaz.CoreDefence.Menus.KitMenu;
 import com.ChronicNinjaz.CoreDefence.Menus.StatsMenu;
 import com.ChronicNinjaz.CoreDefence.Utils.ItemStackBuilder;
-import com.ChronicNinjaz.CoreDefence.Utils.Message;
 
 public class CoreDefence extends JavaPlugin{
 	
@@ -44,6 +42,7 @@ public class CoreDefence extends JavaPlugin{
 	private static StatsMenu stats;
 	private static TeamManager tManager;
 	private static ScorebaordManager scorebaord;
+	private static GameThread thread;
 	private static boolean load = true;
 	private static MySQL mySQL;
 	private Team red;
@@ -93,7 +92,10 @@ public class CoreDefence extends JavaPlugin{
 			player.getInventory().setItem(0, new ItemStackBuilder(new ItemStack(Material.BOW)).withName("Choice Kit").withAmount(1).withLore("(Right Click) to open inventory!").build());
 			player.getInventory().setItem(3, new ItemStackBuilder().buildSkull(player).build());
 		}
-		manager.firstStart();
+		
+		thread = (GameThread) new GameThread().runTaskTimer(CoreDefence.getPlugin(), 0, 20);
+		
+	/*	manager.firstStart();
 		
 		new BukkitRunnable(){
 			@Override
@@ -105,6 +107,8 @@ public class CoreDefence extends JavaPlugin{
 			}
 			
 		}.runTaskTimer(CoreDefence.getPlugin(), 0, 20);
+		
+		*/
 
 	}
 	
@@ -222,6 +226,14 @@ public class CoreDefence extends JavaPlugin{
 
 	public static void setScorebaord(ScorebaordManager scorebaord) {
 		CoreDefence.scorebaord = scorebaord;
+	}
+
+	public static GameThread getThread() {
+		return thread;
+	}
+
+	public static void setThread(GameThread thread) {
+		CoreDefence.thread = thread;
 	}
 
 }

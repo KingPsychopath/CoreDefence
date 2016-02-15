@@ -5,7 +5,9 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.ChronicNinjaz.CoreDefence.CoreDefence;
@@ -15,6 +17,7 @@ import com.ChronicNinjaz.CoreDefence.Managers.Game.Buildings.Region;
 import com.ChronicNinjaz.CoreDefence.Managers.Players.Players;
 import com.ChronicNinjaz.CoreDefence.Managers.Teams.Team;
 import com.ChronicNinjaz.CoreDefence.Managers.Teams.TeamManager;
+import com.ChronicNinjaz.CoreDefence.Utils.ItemStackBuilder;
 import com.ChronicNinjaz.CoreDefence.Utils.Message;
 
 public class ArenaManager {
@@ -23,23 +26,15 @@ public class ArenaManager {
 	
 	private Location point1;
 	private Location point2;
-	private int min;
-	private int seconds;	
 	private int minPlayersPerTeam;
 	private int restartTimer;
 	private int maxCoreDamage = 300;
-	
-	private int gameTimer;
-	private int lobbyTmier;
 	
 	private boolean gameRunning;
 	
 	public void start(){
 		CoreDefence.setGameState(GameState.STARTED);
-		Bukkit.broadcastMessage("RUN START!");
 		setGameRunning(true);
-		this.min = 2; //Mins
-		this.seconds = 20; //Seconds
 		this.maxCoreDamage = 300;
 		
 		for(Player player: Bukkit.getOnlinePlayers()){
@@ -88,8 +83,6 @@ public class ArenaManager {
 				break;
 			}
 		}
-		
-		new GameThread().runTaskTimer(CoreDefence.getPlugin(), 0, 20);
 	}
 		
 	/*	new BukkitRunnable(){
@@ -114,74 +107,32 @@ public class ArenaManager {
 	
 	
 	public void end(){
+		Bukkit.broadcastMessage("end");
 		CoreDefence.setGameState(GameState.WAITING);
 		setGameRunning(false);
-		setRestartTimer(20);
-		new BukkitRunnable(){
-				int count = getRestartTimer();
-				@Override
-				public void run() {
-					Bukkit.broadcastMessage(count + " <<");
-						count--;
-						if(count % 10 <= 0 && count > 10){
-							Message.GAME_TIMER_LOBBY.boardcastGameTimer(count);
-						}else if(count < 10 && count > 0){
-							Message.GAME_TIMER_LOBBY.boardcastGameTimer(count);
-						}else if(count <= 0){
-							Message.GAME_TIMER_STARTED.boardcastGameTimer(count);
-							if(gameMeetsRequirements()){
-								start();
-								cancel();
-							}else{
-								Message.GAME_ERROR_NOT_ENOUGH_PLAYERS.boardcastMessage();
-								count = getRestartTimer();
-							}
-						}
-				}
-				
-			}.runTaskTimer(CoreDefence.getPlugin(), 0, 20);
 		
-	}
-	
-	public void firstStart(){
-		Bukkit.broadcastMessage("1ST RUN!");
-		CoreDefence.setGameState(GameState.WAITING);
-		setGameRunning(false);
-		setRestartTimer(20);
-		this.min = 5; //Mins
-		this.seconds = 60; //Seconds
-		this.maxCoreDamage = 300;
-		this.minPlayersPerTeam = 0;
-		new BukkitRunnable(){
-				int count = getRestartTimer();
-				@Override
-				public void run() {
-						count--;
-						if(count % 10 <= 0 && count > 10){
-							Message.GAME_TIMER_LOBBY.boardcastGameTimer(count);
-						}else if(count < 10 && count > 0){
-							Message.GAME_TIMER_LOBBY.boardcastGameTimer(count);
-						}else if(count <= 0){
-							Message.GAME_TIMER_STARTED.boardcastGameTimer(count);
-							if(gameMeetsRequirements()){
-								Bukkit.broadcastMessage("HAS STARTED!");
-								cancel();
-								start();
-							}else{
-								Message.GAME_ERROR_NOT_ENOUGH_PLAYERS.boardcastMessage();
-								count = getRestartTimer();
-							}
-						}
-				}
-				
-			}.runTaskTimer(CoreDefence.getPlugin(), 0, 20);
+		for(Team t: TeamManager.getTeams()){
+			t.setPoints(0);
+			t.setCoreDamaged(0);
+			t.setTeamDeaths(0);
+			t.setTeamKills(0);
+			for(UUID p: t.getPlayers()){
+				Player player = Bukkit.getPlayer(p);
+				player.teleport(CoreDefence.getConfiguration().getLocation(CoreDefence.getConfiguration().getConfig().getString("Locations.Spawn")));
+				Players.getPlayer(player).setInGame(false);
+				player.getInventory().clear();
+				player.getInventory().setArmorContents(null);
+				player.getInventory().setItem(0, new ItemStackBuilder(new ItemStack(Material.BOW)).withName("Choice Kit").withAmount(1).withLore("(Right Click) to open inventory!").build());
+				player.getInventory().setItem(3, new ItemStackBuilder().buildSkull(player).build());
+			}
+		}
 	}
 	
 	public boolean gameMeetsRequirements(){
 		for(Team t: TeamManager.getTeams()){
 			if(t != null){
 				if(t.getPlayers().size() < getMinPlayersPerTeam()){
-					Bukkit.broadcastMessage("Players! <<");
+					Message.GAME_ERROR_NOT_ENOUGH_PLAYERS.boardcastMessage();
 					return false;
 				}
 			
@@ -221,22 +172,6 @@ public class ArenaManager {
 	public void setPoint2(Location point2) {
 		this.point2 = point2;
 	}
-	
-	public int getMin() {
-		return min;
-	}
-
-	public void setMin(int min) {
-		this.min = min;
-	}
-
-	public int getSeconds() {
-		return seconds;
-	}
-
-	public void setSeconds(int seconds) {
-		this.seconds = seconds;
-	}
 
 	public int getMinPlayersPerTeam() {
 		return minPlayersPerTeam;
@@ -272,26 +207,6 @@ public class ArenaManager {
 
 	public void setRestartTimer(int restartTimer) {
 		this.restartTimer = restartTimer;
-	}
-
-
-	public int getGameTimer() {
-		return gameTimer;
-	}
-
-
-	public void setGameTimer(int gameTimer) {
-		this.gameTimer = gameTimer;
-	}
-
-
-	public int getLobbyTmier() {
-		return lobbyTmier;
-	}
-
-
-	public void setLobbyTmier(int lobbyTmier) {
-		this.lobbyTmier = lobbyTmier;
 	}
 	
 
