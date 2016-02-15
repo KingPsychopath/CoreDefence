@@ -16,11 +16,9 @@ public class InteractEvent implements Listener{
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event){
 		final Player player = event.getPlayer();
-		
 		ItemStack item = event.getItem();
 		if(item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName()){
 			String name = ChatColor.stripColor(item.getItemMeta().getDisplayName());
-			
 			switch(name){
 			case "Choice Kit":
 				CoreDefence.getMenuManager().getMenu("kit").show(player);

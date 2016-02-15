@@ -1,11 +1,13 @@
 package com.ChronicNinjaz.CoreDefence;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.ChronicNinjaz.CoreDefence.Commands.CommandManager;
 import com.ChronicNinjaz.CoreDefence.Listeners.InteractEvent;
@@ -22,11 +24,13 @@ import com.ChronicNinjaz.CoreDefence.Managers.Game.StatsManager;
 import com.ChronicNinjaz.CoreDefence.Managers.Menus.MenuManager;
 import com.ChronicNinjaz.CoreDefence.Managers.Players.Players;
 import com.ChronicNinjaz.CoreDefence.Managers.SQL.MySQL;
+import com.ChronicNinjaz.CoreDefence.Managers.ScorebaordManager.ScorebaordManager;
 import com.ChronicNinjaz.CoreDefence.Managers.Teams.Team;
 import com.ChronicNinjaz.CoreDefence.Managers.Teams.TeamManager;
 import com.ChronicNinjaz.CoreDefence.Menus.KitMenu;
 import com.ChronicNinjaz.CoreDefence.Menus.StatsMenu;
 import com.ChronicNinjaz.CoreDefence.Utils.ItemStackBuilder;
+import com.ChronicNinjaz.CoreDefence.Utils.Message;
 
 public class CoreDefence extends JavaPlugin{
 	
@@ -39,6 +43,7 @@ public class CoreDefence extends JavaPlugin{
 	private static ArenaManager manager;
 	private static StatsMenu stats;
 	private static TeamManager tManager;
+	private static ScorebaordManager scorebaord;
 	private static boolean load = true;
 	private static MySQL mySQL;
 	private Team red;
@@ -88,8 +93,19 @@ public class CoreDefence extends JavaPlugin{
 			player.getInventory().setItem(0, new ItemStackBuilder(new ItemStack(Material.BOW)).withName("Choice Kit").withAmount(1).withLore("(Right Click) to open inventory!").build());
 			player.getInventory().setItem(3, new ItemStackBuilder().buildSkull(player).build());
 		}
-		//manager.firstStart();
-	
+		manager.firstStart();
+		
+		new BukkitRunnable(){
+			@Override
+			public void run() {
+				ScorebaordManager.setScore(ScorebaordManager.getScore() + 1);
+				for(Player player: Bukkit.getOnlinePlayers()){
+						ScorebaordManager.updateScorebaord(player, "game");
+				}
+			}
+			
+		}.runTaskTimer(CoreDefence.getPlugin(), 0, 20);
+
 	}
 	
 	public void onDisable(){}
@@ -199,4 +215,13 @@ public class CoreDefence extends JavaPlugin{
 	public static void setManager(ArenaManager manager) {
 		CoreDefence.manager = manager;
 	}
+
+	public static ScorebaordManager getScorebaord() {
+		return scorebaord;
+	}
+
+	public static void setScorebaord(ScorebaordManager scorebaord) {
+		CoreDefence.scorebaord = scorebaord;
+	}
+
 }

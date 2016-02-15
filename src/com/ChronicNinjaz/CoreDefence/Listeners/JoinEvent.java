@@ -3,12 +3,9 @@ package com.ChronicNinjaz.CoreDefence.Listeners;
 import java.sql.SQLException;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.SkullType;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,8 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import com.ChronicNinjaz.CoreDefence.CoreDefence;
 import com.ChronicNinjaz.CoreDefence.Managers.Enums.GameState;
 import com.ChronicNinjaz.CoreDefence.Managers.Players.Players;
-import com.ChronicNinjaz.CoreDefence.Managers.Teams.Team;
-import com.ChronicNinjaz.CoreDefence.Managers.Teams.TeamManager;
+import com.ChronicNinjaz.CoreDefence.Managers.ScorebaordManager.ScorebaordManager;
 import com.ChronicNinjaz.CoreDefence.Utils.ItemStackBuilder;
 import com.ChronicNinjaz.CoreDefence.Utils.Message;
 
@@ -60,7 +56,6 @@ public class JoinEvent implements Listener{
 				profile.setGems(CoreDefence.getPlugin().getPlayerConfiguration().getConfig().getInt(player.getName() + ".gems"));
 				profile.setBuildings_distroyed(CoreDefence.getPlugin().getPlayerConfiguration().getConfig().getInt(player.getName() + ".buildings_distroyed"));
 			}
-			
 			try{
 				CoreDefence.getPlugin();
 				String l = CoreDefence.getConfiguration().getConfig().getString("Locations.Spawn");
@@ -68,9 +63,7 @@ public class JoinEvent implements Listener{
 						Location loc = CoreDefence.getConfiguration().getLocation(l);
 						if(loc != null){
 							player.teleport(loc);
-							//Bukkit.getWorlds().get(0).playEffect(loc, Effect.SMOKE, 100);
-							
-							player.getWorld().spigot().playEffect(loc, Effect.SMOKE);
+							player.getWorld().spigot().playEffect(loc, Effect.FLAME);
 						}else{
 							Bukkit.broadcastMessage("Error: Lobby Location Has Not Been Configured Properly.");
 						}

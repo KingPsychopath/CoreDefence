@@ -27,7 +27,10 @@ public class ArenaManager {
 	private int seconds;	
 	private int minPlayersPerTeam;
 	private int restartTimer;
-	private int maxCoreDamage;
+	private int maxCoreDamage = 300;
+	
+	private int gameTimer;
+	private int lobbyTmier;
 	
 	private boolean gameRunning;
 	
@@ -86,7 +89,10 @@ public class ArenaManager {
 			}
 		}
 		
-		new BukkitRunnable(){
+		new GameThread().runTaskTimer(CoreDefence.getPlugin(), 0, 20);
+	}
+		
+	/*	new BukkitRunnable(){
 			int count = ((getMin() * 60) + getSeconds());
 			@Override
 			public void run() {
@@ -104,7 +110,7 @@ public class ArenaManager {
 			
 		}.runTaskTimer(CoreDefence.getPlugin(), 0, 20);
 		
-	}
+	}*/
 	
 	
 	public void end(){
@@ -266,6 +272,26 @@ public class ArenaManager {
 
 	public void setRestartTimer(int restartTimer) {
 		this.restartTimer = restartTimer;
+	}
+
+
+	public int getGameTimer() {
+		return gameTimer;
+	}
+
+
+	public void setGameTimer(int gameTimer) {
+		this.gameTimer = gameTimer;
+	}
+
+
+	public int getLobbyTmier() {
+		return lobbyTmier;
+	}
+
+
+	public void setLobbyTmier(int lobbyTmier) {
+		this.lobbyTmier = lobbyTmier;
 	}
 	
 
